@@ -1,4 +1,12 @@
-# This is a basic workflow to help you get started with Actions
+env:
+  repo: https://github.com/farrukh90/artemis.git
+  app_version: 3.0.0
+  region: us-central1
+  project_id: ${{ secrets.PROJECT_ID }}
+  app_name: artemis
+  tag_new_version: ${GITHUB_SHA}
+  artifact_repositary: test-repositary
+
 
 name: CDelivery
 
@@ -26,14 +34,13 @@ jobs:
 
 
       - name: Clone a Repo
-        run: git clone https://github.com/farrukh90/artemis.git
-
+        run: git clone ${{ env.repo }}
 
       - name: Build an image
-        working-directory: artemis
+        working-directory: ${{ env.app_name }}
         run: |
-          git checkout 3.0.0
-          docker build -t us-central1-docker.pkg.dev/terraform-project-catherine202/test-repositary/artemis:3.0.0    . 
+          git checkout ${{ env.app_version }}
+          docker build -t ${{ env.region }}-docker.pkg.dev/${{ env.pro ject_id }}/${{ env.artifact_repositary }}/${{ env.app_name }}:${{ env.tag_new_version }}    . 
         
 
       - name: Authenticate to Registry
@@ -44,9 +51,9 @@ jobs:
 
       - name: Authenticate to Registry
         run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+          gcloud auth configure-docker ${{ env.region }}-docker.pkg.dev
         
 
       - name: Push
-        run: docker push us-central1-docker.pkg.dev/terraform-project-catherine202/test-repositary/artemis:3.0.0
+        run: docker push ${{ env.region }}-docker.pkg.dev/${{ env.project_id }}/${{ env.artifact_repositary }}/${{ env.app_name }}:${{ env.tag_new_version }}
         
