@@ -41,6 +41,10 @@ jobs:
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.SERVICE_ACCOUNT }}'
+
+      - name: Authenticate to Registry
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
         
 
       - name: Push
